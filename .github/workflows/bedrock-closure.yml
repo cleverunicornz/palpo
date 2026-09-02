@@ -1,0 +1,180 @@
+name: bedrock-closure
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: bedrock-closure-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  closure:
+    if: github.event.label.name == 'bedrock:requested'
+    runs-on: org-ci-linux-x64
+    timeout-minutes: 120
+    env:
+      BEDROCK_PROTOCOL_REPO: cleverunicornz/yeetz-bedrock-protocol
+      BEDROCK_PROTOCOL_RELEASE: v1.3.0
+    steps:
+      - name: Guard admission
+        env:
+          BEDROCK_ACTOR: ${{ github.actor }}
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_STATE: ${{ github.event.pull_request.state }}
+        run: |
+          set -euo pipefail
+          test "$PR_STATE" = "open"
+          test "$PR_HEAD_REPO" = "$GITHUB_REPOSITORY"
+          case "$BEDROCK_ACTOR" in
+            cleverunicorn|ThalestheUnicorn|unicornz-architecture|unicornz-code|unicornz-contracts|unicornz-infra|unicornz-integrity|unicornz-invariants|unicornz-manager|unicornz-scout|unicornz-validation) ;;
+            *) echo "Actor '$BEDROCK_ACTOR' is not an approved Bedrock trigger." >&2; exit 1 ;;
+          esac
+          case "$BEDROCK_ACTOR" in
+            *bot*) echo "Bot actors can never trigger Bedrock." >&2; exit 1 ;;
+          esac
+
+      - name: Check out the PR head
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Configure git for the job token
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh auth setup-git
+
+      - name: Verify the OMP runner substrate
+        run: |
+          set -euo pipefail
+          export PATH="/usr/local/bin:$PATH"
+          export PASEO_HOME="$HOME/.paseo"
+          export PASEO_HOST="$PASEO_HOME/daemon.sock"
+          test -S "$PASEO_HOST"
+          paseo daemon status --json | jq -e \
+            '.localDaemon == "running" and .connectedDaemon == "reachable"' >/dev/null
+          paseo provider models omp --thinking --json >/dev/null
+
+      - name: Synchronize the Bedrock protocol
+        id: protocol
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEDROCK_PROTOCOL_REPO: ${{ env.BEDROCK_PROTOCOL_REPO }}
+          BEDROCK_PROTOCOL_RELEASE: ${{ env.BEDROCK_PROTOCOL_RELEASE }}
+          BEDROCK_PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: bash scripts/bedrock-protocol-sync.sh
+
+      - name: Resolve the working head
+        id: head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEDROCK_PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          git fetch origin "$BEDROCK_PR_BRANCH"
+          WORKING_HEAD=$(git rev-parse "origin/$BEDROCK_PR_BRANCH")
+          {
+            printf 'sha=%s\n' "$WORKING_HEAD"
+            printf 'protocol_changed=%s\n' "${{ steps.protocol.outputs.changed }}"
+            printf 'protocol_commit=%s\n' "${{ steps.protocol.outputs.commit }}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run the Bedrock workflow orchestrator
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+          CODEX_AUTOMATION_ACCESS_TOKEN: ${{ secrets.CODEX_AUTOMATION_PRIMARY_ACCESS_TOKEN }}
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          ZHIPU_API_KEY: ${{ secrets.ZAI_API_KEY_2 }}
+          ORCHESTRATOR: bedrock-workflow-orchestrator
+          BEDROCK_REPOSITORY: ${{ github.repository }}
+          BEDROCK_PR_NUMBER: ${{ github.event.pull_request.number }}
+          BEDROCK_PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          BEDROCK_HEAD_SHA: ${{ steps.head.outputs.sha }}
+          BEDROCK_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BEDROCK_ACTOR: ${{ github.actor }}
+          BEDROCK_PROTOCOL_CHANGED: ${{ steps.head.outputs.protocol_changed }}
+          BEDROCK_PROTOCOL_COMMIT: ${{ steps.head.outputs.protocol_commit }}
+          BEDROCK_OWNERSHIP: ${{ github.event.repository.fork && 'UPSTREAM_FORK' || 'OWNED' }}
+          BEDROCK_UPSTREAM: ${{ github.event.repository.parent.full_name || '' }}
+        run: |
+          set -euo pipefail
+          export PATH="/usr/local/bin:$PATH"
+          export PASEO_HOME="$HOME/.paseo"
+          export PASEO_HOST="$PASEO_HOME/daemon.sock"
+
+          payload=$(jq -nc \
+            --arg workflow bedrock-closure \
+            --arg repository "$BEDROCK_REPOSITORY" \
+            --argjson pull_request "$BEDROCK_PR_NUMBER" \
+            --arg branch "$BEDROCK_PR_BRANCH" \
+            --arg head_sha "$BEDROCK_HEAD_SHA" \
+            --arg base_sha "$BEDROCK_BASE_SHA" \
+            --arg actor "$BEDROCK_ACTOR" \
+            --argjson protocol_changed "$BEDROCK_PROTOCOL_CHANGED" \
+            --arg protocol_commit "$BEDROCK_PROTOCOL_COMMIT" \
+            --arg ownership "$BEDROCK_OWNERSHIP" \
+            --arg upstream "$BEDROCK_UPSTREAM" \
+            '{workflow:$workflow,repository:$repository,pull_request:$pull_request,branch:$branch,head_sha:$head_sha,base_sha:$base_sha,actor:$actor,ownership:$ownership,upstream:$upstream,protocol:{changed:$protocol_changed,commit:$protocol_commit}}')
+
+          prompt=$(jq -nr \
+            --arg agent "$ORCHESTRATOR" \
+            --arg payload "$payload" \
+            '"Perform exactly these actions:\n1. Invoke the project OMP task agent \"" + $agent + "\" exactly once using one task batch.\n2. The task call must include context equal to the payload unchanged, and tasks equal to [{name: \"BedrockWorkflow\", agent: \"" + $agent + "\", task: \"Execute the named workflow for the supplied payload and return the declared result.\"}].\n3. Await the blocking agent and all work it owns.\n4. Return its structured result unchanged.\n\nThe named orchestrator owns all research, implementation, delegation, validation, retry, and completion decisions. Do not research, inspect the repository, or perform workflow work yourself.\n\nPayload:\n" + $payload')
+
+          schema='{"type":"object","additionalProperties":false,"required":["workflow","status","summary","final_head","repository_phase","operation","ownership","run_dir","evidence","error"],"properties":{"workflow":{"const":"bedrock-closure"},"status":{"enum":["success","failed"]},"summary":{"type":"string"},"final_head":{"type":"string"},"repository_phase":{"enum":["INITIAL","PLANNING","IMPLEMENTATION","EVOLUTION"]},"operation":{"enum":["INITIALIZE","BACKPORT","DELTA"]},"ownership":{"enum":["OWNED","UPSTREAM_FORK"]},"run_dir":{"type":"string"},"evidence":{"type":"array","items":{"type":"string"}},"error":{"type":["string","null"]}}}'
+
+          paseo-omp-run \
+            --env "GH_TOKEN=$GH_TOKEN" \
+            --env "GITHUB_TOKEN=$GITHUB_TOKEN" \
+            --model openai-codex/gpt-5.6-terra \
+            --thinking max \
+            --title "bedrock-closure $GITHUB_RUN_ID" \
+            --wait-timeout 110m \
+            --output-schema "$schema" \
+            --json \
+            "$prompt" | tee "$RUNNER_TEMP/orchestrator-result.json"
+
+          jq -e '.status == "success"' "$RUNNER_TEMP/orchestrator-result.json" >/dev/null
+
+      - name: Deterministic post-checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEDROCK_PR_NUMBER: ${{ github.event.pull_request.number }}
+          BEDROCK_PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          BEDROCK_WORKING_HEAD: ${{ steps.head.outputs.sha }}
+        run: |
+          set -euo pipefail
+          HEAD=$(gh pr view "$BEDROCK_PR_NUMBER" --json headRefOid --jq .headRefOid)
+          git fetch origin "$BEDROCK_PR_BRANCH"
+          git reset --hard "$HEAD"
+          git merge-base --is-ancestor "$BEDROCK_WORKING_HEAD" "$HEAD"
+          test "$HEAD" != "$BEDROCK_WORKING_HEAD"
+          test -f AGENTS.md
+          test -d situation/runs
+          test -f situation/protocol-lock.json
+          test "$(git show -s --format=%s "$HEAD")" = "$(git show -s --format=%s "$HEAD" | sed -n 's/^\(bedrock: complete closure .*$\)/\1/p')"
+          LAST_RUN=$(git show -s --format=%s "$HEAD" | sed 's/^bedrock: complete closure //')
+          test -f "situation/runs/${LAST_RUN}/closure-report.md"
+          test -f "situation/runs/${LAST_RUN}/validation-report.md"
+          test -f "situation/runs/${LAST_RUN}/opening.md"
+          test -f "situation/runs/${LAST_RUN}/completion.md"
+          RUN_ID=$(git show -s --format=%B "$HEAD" | sed -n 's/^Bedrock-Run: //p' | tail -1)
+          OPENING=$(git show -s --format=%B "$HEAD" | sed -n 's/^Bedrock-Opening: //p' | tail -1)
+          test -n "$RUN_ID"
+          test -n "$OPENING"
+          test "$(git show -s --format=%s "$OPENING")" = "bedrock: open closure $RUN_ID"
+          git merge-base --is-ancestor "$OPENING" "$HEAD"
+          while read -r COMMIT; do
+            test "$(git show -s --format=%B "$COMMIT" | sed -n 's/^Bedrock-Run: //p' | tail -1)" = "$RUN_ID"
+          done < <(git rev-list --reverse "$OPENING"^.."$HEAD")
+          gh pr view "$BEDROCK_PR_NUMBER" --json labels --jq '[.labels[].name]' \
+            | jq -e 'index("bedrock:complete")' >/dev/null
+          gh pr view "$BEDROCK_PR_NUMBER" --json comments --jq '[.comments[].body]' \
+            | jq -e --arg head "$HEAD" 'map(select(contains("BEDROCK_TERMINAL: COMPLETE head=" + $head))) | length > 0' >/dev/null
