@@ -16,6 +16,15 @@ decisions, and invariants, plus this report. It does not change implementation
 source, protocol-owned inputs, root `AGENTS.md`, or root README orientations.
 Those root surfaces are separately considered only after records stabilize.
 
+## Records-stage supersession
+
+The immutable records-stage commit
+`db5e33f3697f74e73eac0b5b0f8df95f1484cc72` is superseded because its commit
+object omits the required `Bedrock-Operation: BACKPORT` trailer. Its subject,
+scope, ancestry, and remaining required trailers are retained in Git history;
+this repair neither amends nor rewrites that commit. This records-only repair
+is the replacement stage receipt and carries the complete required trailer set.
+
 ## Donor inspection
 
 The substantive opening-tree donor set was read from:
