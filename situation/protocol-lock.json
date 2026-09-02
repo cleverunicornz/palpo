@@ -1,0 +1,16 @@
+{
+  "repository": "cleverunicornz/yeetz-bedrock-protocol",
+  "release": "v1.3.0",
+  "commit": "5a2c02441ba6aa21482dd64cec2a75330fcc84d4",
+  "files": {
+    "situation/AGENTS.md": "4d557dd9dbb7bea7758d2f6b7b4a979afc240ebf79874b4599f01ccb1ed84d74",
+    "situation/decisions/AGENTS.md": "85b18c0b353e5837a1fe223e4248f82679473f0c6cf985d84a6742def378622a",
+    "situation/invariants/AGENTS.md": "dd8ef20d39a2548076902ae08b7e6e86c19bc57f47198c0eeb17eba68c4aa15d",
+    "situation/oracles/AGENTS.md": "c2bfc3a51fff38315ac4cef45f750f1046f65b7a2d6e63966213b410c4f6a8d0",
+    "situation/plans/AGENTS.md": "55260ee59564ac955898f17bbe1c5e4e23323df83f704e64d9206e0acaa0e1c4",
+    "situation/promises/AGENTS.md": "ee87cb0ee772460f53b20abc656c3b8c59e584ae46aacffa5d606b71dfe2ab21",
+    "situation/references/AGENTS.md": "5cf3ab0564a4c4b8f9fa3bfb5d0138d2f4c00f3721af0b460b0c72c224feea65",
+    "situation/runs/AGENTS.md": "9b30c8afdbcb7b4cc56bd4aa3be84b5c7c69a5fe16c5f15427587fcdfe059f69",
+    "situation/witnesses/AGENTS.md": "8127fac6383ac37fc7ee14446315053c63dca787e903bcdc304f476e931b16ed"
+  }
+}
