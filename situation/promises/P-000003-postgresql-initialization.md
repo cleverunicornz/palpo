@@ -30,7 +30,7 @@ operation is durable.
   query-pool construction, coordination-pool construction, and capacity bounds.
 - `crates/server/src/main.rs` invokes `data::init` before serving.
 - The data-layer donor history retains this implementation at
-  `2749d190386324a957930cad2e4bd0b4f70bd4e8:crates/data/src/lib.rs`.
+  `e3a831572a0ad857e775fec464354916eda738be:crates/data/src/lib.rs`.
 
 ## Residual
 

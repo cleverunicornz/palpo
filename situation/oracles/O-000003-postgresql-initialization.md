@@ -10,37 +10,50 @@ designed
 
 ## Inputs
 
-- A Palpo build from the head under observation.
-- A disposable reachable PostgreSQL database with migration permissions.
-- Configurations with database pool sizes of one, two, and larger values,
-  including explicit coordination-pool settings.
-- Database migration state and pool-status observation.
+- A Palpo build from the head under observation and a disposable reachable
+  PostgreSQL database with migration permissions and at least one pending
+  embedded migration.
+- Initialization observations that identify the one-off migration connection,
+  both pool-construction events, and the configured query and coordination pool
+  capacities.
+- Separate invalid `db.pool_size` inputs of `0` and `1`.
+- Valid allocation boundary cases with independently calculated
+  `(query, coordination)` capacities: `(2, None) -> (1, 1)`,
+  `(2, Some(1)) -> (1, 1)`, `(4, Some(1)) -> (3, 1)`,
+  `(4, Some(3)) -> (1, 3)`, `(20, Some(2)) -> (18, 2)`,
+  `(64, None) -> (48, 16)`, and `(64, Some(32)) -> (32, 32)`.
+- A capacity property check over each valid total `T >= 2` with an omitted
+  coordination value and with explicit values `1 <= C < T`: query capacity and
+  coordination capacity are both positive and sum exactly to `T`.
 
 ## Pass
 
-- **P1:** A pool size below two is rejected before a usable data layer is
-  created.
-- **P2:** A valid configuration runs pending embedded migrations through a
-  PostgreSQL connection before pools are used.
-- **P3:** For every tested valid budget, query and coordination pools are both
-  created, with at least one coordination connection and at least one query
-  connection.
+- **P1:** Each of the `db.pool_size` values `0` and `1` is rejected before a
+  usable data layer, migration connection, or pool is created.
+- **P2:** A pending embedded migration runs on an identified one-off PostgreSQL
+  connection and completes before construction or use of either query or
+  coordination pool.
+- **P3:** Every listed allocation boundary case has its independently expected
+  capacities, and the stated valid-total property shows that the two capacities
+  consume, and do not exceed, the configured connection budget.
 
 ## Fail
 
-- **F1:** A pool size below two creates a usable data layer.
-- **F2:** A pending migration is skipped and startup nevertheless reports a
-  usable initialized data layer.
-- **F3:** A tested valid budget allocates zero coordination connections or zero
-  query connections.
+- **F1:** Either `db.pool_size` value below two creates a usable data layer,
+  migration connection, or pool.
+- **F2:** A pool is constructed or used before the one-off migration completes,
+  the migration is skipped, or the migration connection is one of the pools.
+- **F3:** A listed boundary case or valid-total property case has a zero
+  capacity, capacities that do not sum to its configured budget, or capacities
+  different from its independently expected explicit allocation.
 
 ## Implementation coverage
 
 | Leg | Decision method | Coverage |
 |---|---|---|
-| P1 | Invoke initialization with pool size one and observe rejection. | manual |
-| P2 | Start against a disposable database with pending migrations and inspect migration state before pool use. | manual |
-| P3 | Observe each pool's status for the tested valid budgets. | manual |
-| F1 | Treat successful pool creation from size one as failure. | manual |
-| F2 | Treat a usable layer with pending migrations as failure. | manual |
-| F3 | Treat either zero-sized effective allocation as failure. | manual |
+| P1 | Invoke initialization separately with `db.pool_size` `0` and `1`; inspect rejection and all connection/pool observations. | manual |
+| P2 | Run pending migration while recording the migration connection identity and ordered pool-construction/use events. | manual |
+| P3 | Compare every listed boundary allocation and the valid-total capacity property to their independently calculated values. | manual |
+| F1 | Treat a usable layer, migration connection, or pool for either below-two input as failure. | manual |
+| F2 | Treat any migration omission, pool activity before migration completion, or shared migration/pool connection as failure. | manual |
+| F3 | Treat a nonpositive, nonpartitioning, over-budget, or explicitly mismatched capacity result as failure. | manual |
