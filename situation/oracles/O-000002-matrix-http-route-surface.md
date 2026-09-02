@@ -30,7 +30,7 @@ designed
 - **F2:** Any named discovery route is absent from the root router.
 - **F3:** Either health route has a different status, content type, or body.
 
-## Coverage
+## Implementation coverage
 
 | Leg | Decision method | Coverage |
 |---|---|---|

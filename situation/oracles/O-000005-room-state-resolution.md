@@ -32,7 +32,7 @@ designed
   expected state or behaves as though the supplied rules were ignored.
 - **F3:** The unavailable-event fixture returns a resolved state.
 
-## Coverage
+## Implementation coverage
 
 | Leg | Decision method | Coverage |
 |---|---|---|

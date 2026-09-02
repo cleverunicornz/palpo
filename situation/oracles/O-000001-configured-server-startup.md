@@ -34,7 +34,7 @@ designed
   successful network-serving state.
 - **F3:** Disabled server mode binds the configured listener.
 
-## Coverage
+## Implementation coverage
 
 | Leg | Decision method | Coverage |
 |---|---|---|

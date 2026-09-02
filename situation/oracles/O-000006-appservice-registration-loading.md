@@ -36,7 +36,7 @@ designed
 - **F4:** An enabled accepted registration cannot be retrieved through the
   appservice data lookup.
 
-## Coverage
+## Implementation coverage
 
 | Leg | Decision method | Coverage |
 |---|---|---|

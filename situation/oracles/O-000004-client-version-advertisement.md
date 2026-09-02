@@ -26,7 +26,7 @@ designed
 - **F1:** The response omits, adds, reorders, or changes any expected version,
   or does not provide a `versions` array.
 
-## Coverage
+## Implementation coverage
 
 | Leg | Decision method | Coverage |
 |---|---|---|

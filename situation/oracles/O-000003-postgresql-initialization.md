@@ -34,7 +34,7 @@ designed
 - **F3:** A tested valid budget allocates zero coordination connections or zero
   query connections.
 
-## Coverage
+## Implementation coverage
 
 | Leg | Decision method | Coverage |
 |---|---|---|
