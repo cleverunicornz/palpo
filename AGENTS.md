@@ -72,5 +72,24 @@ block that follows.
 </bedrock-protocol>
 
 <bedrock-repository>
-Repository-specific orientation has not yet been authored.
+## Repository orientation
+
+Palpo is a Rust Matrix homeserver and an `UPSTREAM_FORK` of
+`https://github.com/palpo-im/palpo`. Its phase is `IMPLEMENTATION`.
+
+## Critical invariants
+
+- **Fork authority** — Palpo's public upstream authority is
+  `https://github.com/palpo-im/palpo`; upstream synchronization and contribution
+  use the designated fork-operations skill outside Bedrock. See
+  `situation/invariants/I-000007-upstream-fork-authority.md`.
+- **Knowledge authority** — root `AGENTS.md` and `situation/` are the
+  repository-operational authority. The sole root English README is human
+  orientation, not canonical architecture or procedure. See
+  `situation/invariants/I-000008-canonical-knowledge-boundary.md`.
+
+## Records
+
+Repository identity and phase are in `situation/context.md`. Behavior,
+assurance, decisions, and open gaps are canonical only under `situation/`.
 </bedrock-repository>
