@@ -1,0 +1,5 @@
+modelRoles:
+  bedrock_workflow_orchestrator: openai-codex/gpt-5.6-terra:max
+  bedrock_closer: openai-codex/gpt-5.6-terra:max
+  bedrock_validator: openai-codex/gpt-5.6-sol:max
+  bedrock_corrector: openai-codex/gpt-5.6-terra:max
