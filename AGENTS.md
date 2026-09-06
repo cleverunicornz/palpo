@@ -182,24 +182,16 @@ Repository-specific orientation belongs in the repository block that follows.
 </bedrock-organization>
 
 <bedrock-repository>
-## Repository orientation
+## palpo
 
-Palpo is a Rust Matrix homeserver and an `UPSTREAM_FORK` of
-`https://github.com/palpo-im/palpo`. Its phase is `IMPLEMENTATION`.
-
-## Critical invariants
-
-- **Fork authority** — Palpo's public upstream authority is
-  `https://github.com/palpo-im/palpo`; upstream synchronization and contribution
-  use the designated fork-operations skill outside Bedrock. See
-  `situation/invariants/I-000007-upstream-fork-authority.md`.
-- **Knowledge authority** — root `AGENTS.md` and `situation/` are the
-  repository-operational authority. The sole root English README is human
-  orientation, not canonical architecture or procedure. See
-  `situation/invariants/I-000008-canonical-knowledge-boundary.md`.
-
-## Records
-
-Repository identity and phase are in `situation/context.md`. Behavior,
-assurance, decisions, and open gaps are canonical only under `situation/`.
+- Identity: Palpo is a Rust Cargo workspace that implements a Matrix homeserver.
+- Ownership: `UPSTREAM_FORK` with public upstream `https://github.com/palpo-im/palpo`; synchronization and contribution follow the organization's fork rules in the root organization block.
+- Phase and implementation map: `situation/context.md`.
+- Critical invariants:
+  - Palpo is an `UPSTREAM_FORK` whose public upstream authority is `https://github.com/palpo-im/palpo`; upstream synchronization and contribution use the designated fork-operations skill outside Bedrock. [`I-000007`](situation/invariants/I-000007-upstream-fork-authority.md)
+  - For this fork, root `AGENTS.md` and `situation/` are the repository-operational authority; the sole root English README is a minimal human orientation and does not define architecture, procedures, or repository behavior. [`I-000008`](situation/invariants/I-000008-canonical-knowledge-boundary.md)
+  - For this `UPSTREAM_FORK` of `https://github.com/palpo-im/palpo`, upstream-owned working-tree files, including README and documentation, remain unchanged; fork-specific orientation resides only in the root `AGENTS.md` blocks and `situation/`. [`I-000009`](situation/invariants/I-000009-upstream-owned-fork-integrity.md)
+- Verification: Dispatch `Complement tests` from `.github/workflows/complement.yml` with `workflow_dispatch`; every gate claim cites the resulting workflow run URL.
+- Tool priority: organization defaults.
+- Donor boundary: `e3a831572a0ad857e775fec464354916eda738be`.
 </bedrock-repository>
