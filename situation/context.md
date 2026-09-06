@@ -29,3 +29,9 @@ This adoption reads the substantive donor tree named by trigger head
 `e3a831572a0ad857e775fec464354916eda738be` in the opening record. Current
 behavioral records cite live repository paths; donor documentation that this
 closure removes is cited as historical bytes at that commit.
+
+## Closure state
+
+- Current run: `20260906T073143Z-82d6013c4ec5fab6b911c2f21a7d6e494903086e` (open)
+- Last completed closure: none
+- Transcript: none
