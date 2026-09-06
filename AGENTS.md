@@ -195,24 +195,15 @@ Repository-specific orientation belongs in the repository block that follows.
 </bedrock-organization>
 
 <bedrock-repository>
-## Repository orientation
+## Palpo
 
-Palpo is a Rust Matrix homeserver and an `UPSTREAM_FORK` of
-`https://github.com/palpo-im/palpo`. Its phase is `IMPLEMENTATION`.
-
-## Critical invariants
-
-- **Fork authority** — Palpo's public upstream authority is
-  `https://github.com/palpo-im/palpo`; upstream synchronization and contribution
-  use the designated fork-operations skill outside Bedrock. See
-  `situation/invariants/I-000007-upstream-fork-authority.md`.
-- **Knowledge authority** — root `AGENTS.md` and `situation/` are the
-  repository-operational authority. The sole root English README is human
-  orientation, not canonical architecture or procedure. See
-  `situation/invariants/I-000008-canonical-knowledge-boundary.md`.
-
-## Records
-
-Repository identity and phase are in `situation/context.md`. Behavior,
-assurance, decisions, and open gaps are canonical only under `situation/`.
+- Identity: Palpo is a Rust Cargo workspace that produces a Matrix homeserver with shared protocol types and a PostgreSQL-backed data layer.
+- Ownership: `UPSTREAM_FORK` of public upstream `palpo-im/palpo` (`https://github.com/palpo-im/palpo`); synchronization and contribution follow the organization's fork rules in the root `<bedrock-organization>` block.
+- Phase and implementation map: `situation/context.md`.
+- Critical invariants:
+  - [I-000009: Current upstream-fork authority](situation/invariants/I-000009-current-upstream-fork-authority.md): Palpo is an `UPSTREAM_FORK` whose public upstream authority is `https://github.com/palpo-im/palpo`; upstream synchronization and contribution follow the organization's fork rules in the root `<bedrock-organization>` block.
+  - [I-000010: Fork knowledge-projection boundary](situation/invariants/I-000010-fork-knowledge-projection.md): For this `UPSTREAM_FORK`, `situation/` is the canonical repository-knowledge surface and the `<bedrock-repository>` block in root `AGENTS.md` is its concise repository orientation; Bedrock preserves upstream-owned files during knowledge projection.
+- Verification: Dispatch the `Complement tests` workflow with `gh workflow run complement.yml --ref <PR branch>`; retain the resulting workflow run URL and its artifact evidence in a Witness, and every gate claim cites that resulting run URL.
+- Tool priority: organization defaults.
+- Donor boundary: `e3a831572a0ad857e775fec464354916eda738be`.
 </bedrock-repository>
