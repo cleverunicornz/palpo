@@ -34,6 +34,6 @@ this closure removes is cited as historical bytes at that commit.
 
 ## Closure state
 
-- Current run: `20260906T110056Z-b8bb8410d468b1391911e7f8523b8e62b4135b19` (open)
-- Last completed closure: none
-- Transcript: none
+- Current run: none
+- Last completed closure: run `20260906T110056Z-b8bb8410d468b1391911e7f8523b8e62b4135b19`, opened at `fce60a2c1ce91d095973df4b10b889baff2b2062`
+- Transcript: `s3://cvu-automation-runs-uk/bedrock/cleverunicornz/palpo/pr-6/20260906T110056Z-b8bb8410d468b1391911e7f8523b8e62b4135b19/`
