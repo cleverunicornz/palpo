@@ -203,7 +203,7 @@ Repository-specific orientation belongs in the repository block that follows.
 - Critical invariants:
   - [I-000009: Current upstream-fork authority](situation/invariants/I-000009-current-upstream-fork-authority.md): Palpo is an `UPSTREAM_FORK` whose public upstream authority is `https://github.com/palpo-im/palpo`; upstream synchronization and contribution follow the organization's fork rules in the root `<bedrock-organization>` block.
   - [I-000010: Fork knowledge-projection boundary](situation/invariants/I-000010-fork-knowledge-projection.md): For this `UPSTREAM_FORK`, `situation/` is the canonical repository-knowledge surface and the `<bedrock-repository>` block in root `AGENTS.md` is its concise repository orientation; Bedrock preserves upstream-owned files during knowledge projection.
-- Verification: Dispatch the `Complement tests` workflow with `gh workflow run complement.yml --ref <PR branch>`; retain the resulting workflow run URL and its artifact evidence in a Witness, and every gate claim cites that resulting run URL.
+- Verification: No assured, organization-compliant gate is presently recorded. [G-000001: Compliance-result provenance](situation/gaps/G-000001-compliance-result-provenance.md) remains open; [C-000001: Provenanced Complement witness](situation/candidates/C-000001-provenanced-complement-witness.md) remains a proposed evidence-capture response, not a commitment.
 - Tool priority: organization defaults.
 - Donor boundary: `e3a831572a0ad857e775fec464354916eda738be`.
 </bedrock-repository>
