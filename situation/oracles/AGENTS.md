@@ -47,6 +47,13 @@ leg is valid, but witnesses must carry direct evidence for it.
 ## Rules
 
 - Pass and fail conditions must be decidable from the stated inputs.
+- The Oracle collectively decides every explicit clause of the Promise inside
+  its declared Scope. It must not broaden the Promise, judge behavior outside
+  Scope, or attempt to disprove infinite negative space. Outside-Scope behavior
+  is neither a failed leg nor a validation finding.
+- Scope bounds the positive behavioral claim even when the Promise is phrased
+  as a prohibition. Residual names only relevant unassured boundaries; it does
+  not enumerate everything the software could theoretically do.
 - `implemented` requires at least one executable leg. A wholly manual
   oracle remains `designed`.
 - One oracle may judge one promise. When a judgment rule serves multiple
@@ -57,13 +64,4 @@ leg is valid, but witnesses must carry direct evidence for it.
 
 ## Reference discipline
 
-Files inside this repository are referenced by repository-root-relative
-path. Files in external public repositories are referenced only by full
-public URL. Files in external private repositories are referenced by
-declared coordinate — `Private: owner/repo@<ref>#<path>` — never by an
-unauthenticated URL, never undeclared. Never reference a local clone, a
-private checkout, or a machine-local path.
-
-A declared-private reference that cannot be fetched is expected, not an
-error: never stop for one, never remove it, never invent its contents.
-Content from a private reference never crosses into a public document.
+Reference discipline is defined in `situation/AGENTS.md`.
