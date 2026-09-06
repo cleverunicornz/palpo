@@ -11,7 +11,7 @@ accepted
 ## Context
 
 The `DELTA` interval
-`1ea6cc66e1a51fa88ad151f010444e733a987732..b1fc1aaeee7d9d8909dc68a4b413c32a442b12f7`
+`1ea6cc66e1a51fa88ad151f010444e733a987732..82d6013c4ec5fab6b911c2f21a7d6e494903086e`
 retires repository-local Bedrock workflow, agent, configuration, and run-report
 material while installing the organization-owned fork boundary. `D-000007`
 selected an earlier documentation policy that rewrote or removed material from
