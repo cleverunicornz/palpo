@@ -29,13 +29,28 @@ The record classes are:
 - **Candidates** record evidence-derived possibilities, not commitments.
 - **Plans** group Candidates and Promises into work without restating them.
 - **References** retain supporting depth.
-- **Runs** preserve closure lineage through Git checkpoints and stage commits.
 
-Git is the run's append-only event log. Agents commit and push completed units
-of work promptly; corrections are new forward commits. Published history is
-never amended, rebased, reset, or force-pushed. Only opening and closing
-checkpoints define the run container; interior commit count and shape are not
-prescribed.
+Git is the run's append-only event log. A run performs one closure on one pull
+request branch, bounded by an opening checkpoint commit and a closing checkpoint
+commit on that branch. Agents commit and push completed units of work promptly;
+corrections are new forward commits. Published history is never amended,
+rebased, reset, or force-pushed. Only opening and closing checkpoints define the
+run container; interior commit count and shape are not prescribed.
+
+Run reports — closer summary, validator docket, corrector summary — are pull
+request comments, never repository files. Agent transcripts are archived outside
+the repository; both checkpoint commits carry the archive URI in a
+`Bedrock-Transcript` trailer alongside their other trailers. The checkpoint
+commits are the only writers of the closure state in `situation/context.md`.
+
+A failed run is never resumed. An opening checkpoint with no closing checkpoint
+marks a failed closure: the pull request is closed with a pointer to its rerun,
+and the rerun starts on a new branch from the head admitted before the failed
+run. The failed branch and its comments remain the record.
+
+A record is immutable from the first closing checkpoint that follows its
+creation or change. Until then, on the open pull request, it may be corrected
+in place by a forward commit.
 
 Every assured Promise is invariant behavior. Changing it requires a superseding
 Promise, a Decision explaining the change, a replacement Oracle, and new
@@ -45,7 +60,7 @@ Gaps record what relevant capability, evidence, decision, implementation, or
 instrument is absent. Candidates are possible responses derived from evidence.
 A Candidate becomes behavior only through a Decision that promotes it into a
 falsifiable Promise with an Oracle. Plans qualify Candidates and implement or
-assure Promises; no separate spike concept exists.
+assure Promises.
 
 The learning loop is:
 
@@ -62,13 +77,20 @@ coordinates; inability to fetch a declared-private reference is expected and
 never grounds to stop, remove it, or invent its contents.
 
 When repository orientation identifies an upstream fork, upstream
-synchronization and contribution are outside Bedrock. Use the designated
-fork-operations skill; do not infer or recreate that procedure from repository
-records.
+synchronization and contribution follow the organization's fork rules in the
+root organization block. Bedrock records ownership and the upstream coordinate
+and performs neither.
 
-This protocol block is protocol-owned. Agents must not edit any byte inside it.
-Repository-specific orientation belongs only inside the separate repository
-block that follows.
+Root `AGENTS.md` carries three tagged blocks in this order: the protocol block
+`bedrock-protocol`, the organization block `bedrock-organization`, and the
+repository block `bedrock-repository`. The organization block is synchronized
+by the closure automation and is optional; adopters whose automation supplies
+none carry the other two blocks.
+
+This protocol block is protocol-owned; the organization block is
+organization-owned. Agents must not edit any byte inside either. Agents edit only the repository block, which holds all repository-specific
+orientation in the shape given by the repository block template published with
+the protocol release and reproduced in the closure automation.
 </bedrock-protocol>
 
 <bedrock-repository>

@@ -30,7 +30,7 @@ C-<six digits>-<kebab-case-name>.md
 
 ## Promotion transaction
 
-Promotion is one atomic records-stage commit:
+Promotion is one atomic commit:
 
 ```text
 Candidate -> promoted
@@ -54,14 +54,11 @@ the Candidate remains `qualifying`.
 - Every Candidate has an evidence-bearing Origin. Unbounded brainstorming does
   not become repository knowledge.
 
-## Plans, not spikes
+## Qualification plans
 
 Plans contain Candidates being qualified and Promises being implemented or
-assured. No separate spike record or concept exists; qualification is ordinary
-Plan work over Candidates.
+assured. Qualification is ordinary Plan work over Candidates.
 
 ## Reference discipline
 
-Use repository-root-relative paths for current files, `<commit>:<path>` for
-historical repository bytes, full URLs for public external files, and declared
-private coordinates for private external files.
+Reference discipline is defined in `situation/AGENTS.md`.
