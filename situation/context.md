@@ -12,7 +12,7 @@ types live in `crates/core/`, and the PostgreSQL-backed data layer lives in
 
 `cleverunicornz/palpo` is an `UPSTREAM_FORK` whose public upstream authority is
 `https://github.com/palpo-im/palpo`. Upstream synchronization and contribution
-follow the organization's fork rules in the root `<bedrock-organization>` block.
+follow the organization's fork rules in the organization layer (`git-etiquette` skill).
 The historical BACKPORT opening record is available at
 `1ea6cc66e1a51fa88ad151f010444e733a987732:situation/runs/bedrock-20260902T085609Z-e3a831572a0a-0001/opening.md`.
 

@@ -2,7 +2,7 @@
 ## Palpo
 
 - Identity: Palpo is a Rust Cargo workspace that produces a Matrix homeserver with shared protocol types and a PostgreSQL-backed data layer.
-- Ownership: `UPSTREAM_FORK` of public upstream `palpo-im/palpo` (`https://github.com/palpo-im/palpo`); synchronization and contribution follow the organization's fork rules in the root `<bedrock-organization>` block.
+- Ownership: `UPSTREAM_FORK` of public upstream `palpo-im/palpo` (`https://github.com/palpo-im/palpo`); synchronization and contribution follow the organization's fork rules in the organization layer (`git-etiquette` skill).
 - Phase and implementation map: `situation/context.md`.
 - Critical invariants:
   - [I-000009: Current upstream-fork authority](situation/invariants/I-000009-current-upstream-fork-authority.md): Palpo is an `UPSTREAM_FORK` whose public upstream authority is `https://github.com/palpo-im/palpo`; upstream synchronization and contribution follow the organization's fork rules in the root `<bedrock-organization>` block.
